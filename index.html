@@ -1,0 +1,231 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F5EF; --ink:#211F1A; --ink-soft:#635F54; --line:#E2DDCF; --line-strong:#CFC8B4;
+    --a-legal:#3E6E96; --a-info:#2C8C6B; --a-fin:#6B8F3E; --a-mkt:#B15577;
+    --a-com:#C1662E; --a-rrhh:#6A5AA0; --a-infra:#B08A2E; --a-gob:#6B6B62;
+  }
+  .pt-root{font-family:'Inter',sans-serif;color:var(--ink);background:var(--paper);padding:1.5rem;border-radius:12px}
+  .pt-root h1{font-family:'Fraunces',serif;font-weight:600;font-size:26px;margin:0 0 2px}
+  .pt-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 14px}
+  .pt-summary{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px}
+  .pt-stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-width:96px}
+  .pt-stat .n{font-family:'Fraunces',serif;font-size:22px;font-weight:600;line-height:1}
+  .pt-stat .l{font-size:11px;color:var(--ink-soft);margin-top:3px}
+  .pt-bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;flex:1;min-width:140px;align-self:center}
+  .pt-bar-fill{height:100%;background:var(--a-info);transition:width .3s}
+  .pt-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .pt-chip{font-family:'Inter';font-size:12px;padding:5px 11px;border-radius:999px;border:1px solid var(--line-strong);background:#fff;cursor:pointer;color:var(--ink-soft);display:inline-flex;align-items:center;gap:6px}
+  .pt-chip .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .pt-chip[data-on="1"]{color:#fff;border-color:transparent}
+  .pt-select{font-family:'Inter';font-size:12px;padding:6px 10px;border-radius:8px;border:1px solid var(--line-strong);background:#fff;color:var(--ink)}
+  .pt-views{margin-left:auto;display:flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden}
+  .pt-views button{font-family:'Inter';font-size:12px;padding:6px 12px;border:none;background:#fff;color:var(--ink-soft);cursor:pointer}
+  .pt-views button[aria-pressed="true"]{background:var(--ink);color:#fff}
+  .pt-group{margin-bottom:16px}
+  .pt-group-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .pt-group-head .dot{width:10px;height:10px;border-radius:50%}
+  .pt-group-head h3{font-size:13px;font-weight:600;margin:0;font-family:'Inter'}
+  .pt-group-head span{font-size:11px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace}
+  .pt-card{background:#fff;border:1px solid var(--line);border-left-width:4px;border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:12px}
+  .pt-card .txt{flex:1;min-width:0}
+  .pt-card .t{font-size:13px;font-weight:500;line-height:1.35}
+  .pt-card .m{font-size:11px;color:var(--ink-soft);margin-top:3px;font-family:'IBM Plex Mono',monospace}
+  .pt-status{font-size:11px;padding:4px 9px;border-radius:999px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper);white-space:nowrap;font-family:'Inter'}
+  .pt-status[data-s="Completado"]{background:#e7efe0;border-color:#b9cfa4;color:#3d5a24}
+  .pt-status[data-s="En curso"]{background:#eaf1f6;border-color:#a9c7db;color:#2b5674}
+  .pt-status[data-s="Bloqueado"]{background:#f6e8e6;border-color:#dcb0aa;color:#7a3226}
+  .pt-timeline{overflow-x:auto}
+  .pt-ruler{display:grid;grid-template-columns:200px repeat(16,32px);border-bottom:1px solid var(--line-strong);padding-bottom:6px;margin-bottom:6px;min-width:712px}
+  .pt-ruler .lbl{font-size:11px;color:var(--ink-soft)}
+  .pt-ruler .wk{font-family:'IBM Plex Mono',monospace;font-size:10px;text-align:center;color:var(--ink-soft)}
+  .pt-row{display:grid;grid-template-columns:200px repeat(16,32px);align-items:center;min-height:30px;min-width:712px}
+  .pt-row:nth-child(odd){background:rgba(0,0,0,0.015)}
+  .pt-row .rlbl{font-size:11.5px;padding-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pt-row .cell{border-left:1px dashed var(--line);height:100%}
+  .pt-seg{height:14px;border-radius:4px;margin:8px 2px 0 2px}
+  .pt-empty{font-size:13px;color:var(--ink-soft);padding:20px;text-align:center;border:1px dashed var(--line-strong);border-radius:10px}
+  @media(max-width:640px){.pt-views{margin-left:0;width:100%}}
+</style>
+<div class="pt-root" id="ptRoot">
+  <p class="pt-eyebrow">Centro de exalumnos · Semanas 1–16</p>
+  <h1>Plan de tareas</h1>
+  <div class="pt-summary" id="ptSummary"></div>
+  <div class="pt-controls" id="ptControls"></div>
+  <div id="ptBody"></div>
+</div>
+<script>
+(function(){
+  const TASKS = [
+   {area:"Legal",tarea:"Definir tipo de entidad y estructura legal (fundación, corporación, asociación)",resp:"Abogado",s:1,d:1,estado:"Pendiente"},
+   {area:"Legal",tarea:"Redactar estatutos y escritura pública",resp:"Abogado",s:2,d:2,estado:"Pendiente"},
+   {area:"Legal",tarea:"Inscribir la entidad y obtener RUT / personalidad jurídica",resp:"Abogado / Contador",s:4,d:1,estado:"Pendiente"},
+   {area:"Legal",tarea:"Tramitar permisos municipales",resp:"Encargado legal",s:5,d:1,estado:"Pendiente"},
+   {area:"Legal",tarea:"Regularizar situación tributaria (inicio de actividades, régimen)",resp:"Contador",s:5,d:1,estado:"Pendiente"},
+
+   {area:"Informática",tarea:"Contratar dominio y hosting",resp:"TI",s:3,d:1,estado:"Pendiente"},
+   {area:"Informática",tarea:"Configurar correo institucional",resp:"TI",s:3,d:1,estado:"Pendiente"},
+   {area:"Informática",tarea:"Diseñar y publicar sitio web",resp:"TI / Diseñador",s:4,d:3,estado:"Pendiente"},
+   {area:"Informática",tarea:"Construir base de datos de exalumnos",resp:"TI",s:4,d:2,estado:"Pendiente"},
+   {area:"Informática",tarea:"Desarrollar app / formulario de censo",resp:"TI",s:6,d:2,estado:"Pendiente"},
+
+   {area:"Finanzas",tarea:"Abrir cuenta bancaria institucional",resp:"Tesorero",s:4,d:1,estado:"Pendiente"},
+   {area:"Finanzas",tarea:"Elaborar presupuesto de gastos e ingresos",resp:"Contador",s:5,d:2,estado:"Pendiente"},
+   {area:"Finanzas",tarea:"Proyectar flujo de caja (12-24 meses)",resp:"Contador",s:6,d:2,estado:"Pendiente"},
+   {area:"Finanzas",tarea:"Definir política de cuotas y donaciones",resp:"Directorio",s:7,d:1,estado:"Pendiente"},
+   {area:"Finanzas",tarea:"Implementar sistema contable",resp:"Contador",s:7,d:2,estado:"Pendiente"},
+
+   {area:"Recursos humanos",tarea:"Mapear especialistas requeridos por área",resp:"Directorio",s:1,d:1,estado:"Pendiente"},
+   {area:"Recursos humanos",tarea:"Definir perfiles y dedicación (full-time / part-time / voluntario)",resp:"RRHH",s:2,d:1,estado:"Pendiente"},
+   {area:"Recursos humanos",tarea:"Contratar coordinador general",resp:"RRHH",s:3,d:2,estado:"Pendiente"},
+   {area:"Recursos humanos",tarea:"Contratar contador y asesor legal",resp:"RRHH",s:3,d:2,estado:"Pendiente"},
+   {area:"Recursos humanos",tarea:"Contratar community manager",resp:"RRHH",s:6,d:2,estado:"Pendiente"},
+
+   {area:"Marketing",tarea:"Definir identidad de marca",resp:"Marketing",s:6,d:2,estado:"Pendiente"},
+   {area:"Marketing",tarea:"Seleccionar redes sociales prioritarias",resp:"Marketing",s:7,d:1,estado:"Pendiente"},
+   {area:"Marketing",tarea:"Crear plan de contenidos",resp:"Marketing",s:8,d:1,estado:"Pendiente"},
+   {area:"Marketing",tarea:"Configurar canales de comunicación (newsletter, WhatsApp)",resp:"Marketing",s:8,d:2,estado:"Pendiente"},
+   {area:"Marketing",tarea:"Lanzar campaña de difusión inicial",resp:"Marketing",s:9,d:2,estado:"Pendiente"},
+
+   {area:"Comercialización",tarea:"Definir catálogo de productos (charlas, talleres)",resp:"Coordinador",s:9,d:2,estado:"Pendiente"},
+   {area:"Comercialización",tarea:"Establecer alianzas para bolsa de empleo",resp:"Coordinador",s:10,d:2,estado:"Pendiente"},
+   {area:"Comercialización",tarea:"Diseñar programa de mentorías",resp:"Coordinador",s:11,d:2,estado:"Pendiente"},
+   {area:"Comercialización",tarea:"Definir membresías premium",resp:"Directorio",s:11,d:1,estado:"Pendiente"},
+   {area:"Comercialización",tarea:"Planificar primer evento de networking",resp:"Coordinador",s:12,d:2,estado:"Pendiente"},
+
+   {area:"Infraestructura",tarea:"Definir necesidad de oficina / espacio físico",resp:"Directorio",s:1,d:1,estado:"Pendiente"},
+   {area:"Infraestructura",tarea:"Buscar y contratar el espacio",resp:"Administración",s:2,d:2,estado:"Pendiente"},
+   {area:"Infraestructura",tarea:"Adquirir equipamiento (PC, mobiliario)",resp:"Administración",s:4,d:1,estado:"Pendiente"},
+   {area:"Infraestructura",tarea:"Instalar servicios básicos e internet",resp:"Administración",s:4,d:1,estado:"Pendiente"},
+   {area:"Infraestructura",tarea:"Habilitar señalética e imagen del espacio",resp:"Administración",s:5,d:1,estado:"Pendiente"},
+
+   {area:"Gobernanza / Otros",tarea:"Constituir comité / mesa directiva",resp:"Directorio",s:1,d:1,estado:"Pendiente"},
+   {area:"Gobernanza / Otros",tarea:"Establecer alianza con la universidad de origen",resp:"Directorio",s:2,d:3,estado:"Pendiente"},
+   {area:"Gobernanza / Otros",tarea:"Definir plan de sostenibilidad a largo plazo",resp:"Directorio",s:12,d:3,estado:"Pendiente"},
+   {area:"Gobernanza / Otros",tarea:"Revisión y ajuste general del proyecto",resp:"Directorio",s:15,d:2,estado:"Pendiente"},
+   {area:"Gobernanza / Otros",tarea:"Lanzamiento oficial del centro de exalumnos",resp:"Directorio",s:16,d:1,estado:"Pendiente"},
+  ].map((t,i)=>Object.assign({id:i},t));
+
+  const COLORS = {
+    "Legal":"var(--a-legal)","Informática":"var(--a-info)","Finanzas":"var(--a-fin)",
+    "Marketing":"var(--a-mkt)","Comercialización":"var(--a-com)","Recursos humanos":"var(--a-rrhh)",
+    "Infraestructura":"var(--a-infra)","Gobernanza / Otros":"var(--a-gob)"
+  };
+  const AREAS = [...new Set(TASKS.map(t=>t.area))];
+  const STATUSES = ["Pendiente","En curso","Completado","Bloqueado"];
+  const CYCLE = {"Pendiente":"En curso","En curso":"Completado","Completado":"Bloqueado","Bloqueado":"Pendiente"};
+
+  const state = { activeAreas: new Set(AREAS), status: "Todos", view: "tablero" };
+
+  const summaryEl = document.getElementById('ptSummary');
+  const controlsEl = document.getElementById('ptControls');
+  const bodyEl = document.getElementById('ptBody');
+
+  function filtered(){
+    return TASKS.filter(t => state.activeAreas.has(t.area) && (state.status==="Todos" || t.estado===state.status));
+  }
+
+  function renderSummary(){
+    const total = TASKS.length;
+    const done = TASKS.filter(t=>t.estado==="Completado").length;
+    const pct = Math.round(done/total*100);
+    summaryEl.innerHTML = `
+      <div class="pt-stat"><div class="n">${total}</div><div class="l">tareas totales</div></div>
+      <div class="pt-stat"><div class="n">${done}</div><div class="l">completadas</div></div>
+      <div class="pt-stat"><div class="n">${pct}%</div><div class="l">avance</div></div>
+      <div class="pt-bar"><div class="pt-bar-fill" style="width:${pct}%"></div></div>
+    `;
+  }
+
+  function renderControls(){
+    const chips = AREAS.map(a=>{
+      const on = state.activeAreas.has(a) ? "1":"0";
+      const bg = on==="1" ? `style="background:${COLORS[a]}"` : "";
+      return `<button class="pt-chip" data-area="${a}" data-on="${on}" ${bg}><span class="dot" style="background:${COLORS[a]}${on==="1"?';filter:brightness(1.6)':''}"></span>${a}</button>`;
+    }).join("");
+    controlsEl.innerHTML = `
+      ${chips}
+      <select class="pt-select" id="ptStatusSel">
+        <option ${state.status==="Todos"?"selected":""}>Todos</option>
+        ${STATUSES.map(s=>`<option ${state.status===s?"selected":""}>${s}</option>`).join("")}
+      </select>
+      <div class="pt-views">
+        <button data-view="tablero" aria-pressed="${state.view==='tablero'}">Tablero</button>
+        <button data-view="cronograma" aria-pressed="${state.view==='cronograma'}">Cronograma</button>
+      </div>
+    `;
+    controlsEl.querySelectorAll('.pt-chip').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const a = el.dataset.area;
+        if(state.activeAreas.has(a)) state.activeAreas.delete(a); else state.activeAreas.add(a);
+        renderControls(); renderBody();
+      });
+    });
+    document.getElementById('ptStatusSel').addEventListener('change', e=>{
+      state.status = e.target.value; renderBody();
+    });
+    controlsEl.querySelectorAll('.pt-views button').forEach(b=>{
+      b.addEventListener('click', ()=>{ state.view=b.dataset.view; renderControls(); renderBody(); });
+    });
+  }
+
+  function cycleStatus(id){
+    const t = TASKS.find(x=>x.id===id);
+    t.estado = CYCLE[t.estado];
+    renderSummary(); renderBody();
+  }
+
+  function renderBoard(list){
+    if(!list.length){ bodyEl.innerHTML = `<div class="pt-empty">No hay tareas con estos filtros.</div>`; return; }
+    const byArea = {};
+    list.forEach(t=>{ (byArea[t.area] = byArea[t.area]||[]).push(t); });
+    bodyEl.innerHTML = Object.keys(byArea).map(area=>{
+      const items = byArea[area];
+      const done = items.filter(t=>t.estado==="Completado").length;
+      return `<div class="pt-group">
+        <div class="pt-group-head"><span class="dot" style="background:${COLORS[area]}"></span><h3>${area}</h3><span>${done}/${items.length}</span></div>
+        ${items.map(t=>`
+          <div class="pt-card" style="border-left-color:${COLORS[area]}">
+            <div class="txt">
+              <div class="t">${t.tarea}</div>
+              <div class="m">S${t.s}–S${t.s+t.d-1} · ${t.resp}</div>
+            </div>
+            <button class="pt-status" data-s="${t.estado}" data-id="${t.id}">${t.estado}</button>
+          </div>
+        `).join("")}
+      </div>`;
+    }).join("");
+    bodyEl.querySelectorAll('.pt-status').forEach(b=>{
+      b.addEventListener('click', ()=>cycleStatus(Number(b.dataset.id)));
+    });
+  }
+
+  function renderTimeline(list){
+    if(!list.length){ bodyEl.innerHTML = `<div class="pt-empty">No hay tareas con estos filtros.</div>`; return; }
+    const weeks = Array.from({length:16},(_,i)=>i+1);
+    const ruler = `<div class="pt-ruler"><div class="lbl">Tarea</div>${weeks.map(w=>`<div class="wk">${w}</div>`).join("")}</div>`;
+    const rows = list.map(t=>{
+      const cells = weeks.map(w=>`<div class="cell"></div>`).join("");
+      const startCol = t.s;
+      const width = t.d*32 - 6;
+      const left = (t.s-1)*32 + 3;
+      return `<div class="pt-row">
+        <div class="rlbl" title="${t.tarea}">${t.tarea}</div>
+        <div style="grid-column:2/18;display:grid;grid-template-columns:repeat(16,32px);position:relative;">
+          ${cells}
+          <div class="pt-seg" title="${t.tarea} · S${t.s}-S${t.s+t.d-1}" style="grid-column:1/-1;width:${width}px;margin-left:${left}px;position:absolute;background:${COLORS[t.area]};opacity:${t.estado==='Completado'?0.55:0.9}"></div>
+        </div>
+      </div>`;
+    }).join("");
+    bodyEl.innerHTML = `<div class="pt-timeline">${ruler}${rows}</div>`;
+  }
+
+  function renderBody(){
+    const list = filtered();
+    if(state.view==="tablero") renderBoard(list); else renderTimeline(list);
+  }
+
+  renderSummary(); renderControls(); renderBody();
+})();
+</script>
