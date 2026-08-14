@@ -6,19 +6,20 @@
 <title>CECOSAM — Centro de Exalumnos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    --bg: #07070A;
-    --bg-elevated: #0E0E14;
-    --bg-card: #12121A;
-    --bg-card-hover: #181824;
-    --border: #1E1E2E;
-    --border-hover: #2A2A40;
-    --text-primary: #F0EFF5;
-    --text-secondary: #8B8AA3;
-    --text-muted: #5A5970;
+    --bg-deep: #0a0f1e;
+    --bg-purple: #1a0a2e;
+    --bg-elevated: rgba(10, 15, 30, 0.72);
+    --bg-card: rgba(15, 20, 40, 0.78);
+    --bg-card-hover: rgba(20, 28, 55, 0.85);
+    --border: rgba(100, 80, 180, 0.18);
+    --border-hover: rgba(120, 100, 220, 0.3);
+    --text-primary: #E8E6F0;
+    --text-secondary: #A09EC0;
+    --text-muted: #6B6890;
     --accent-legal: #6FA8DC;
     --accent-info: #4FD1A5;
     --accent-fin: #A9D18E;
@@ -30,7 +31,9 @@
     --gradient-start: #A855F7;
     --gradient-mid: #3B82F6;
     --gradient-end: #EAB308;
-    --shadow-glow: rgba(168, 85, 247, 0.08);
+    --neon-cyan: #00d4ff;
+    --neon-purple: #a855f7;
+    --shadow-glow: rgba(168, 85, 247, 0.1);
     --radius-sm: 10px;
     --radius-md: 14px;
     --radius-lg: 20px;
@@ -42,39 +45,79 @@
   html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    background: var(--bg-deep);
     color: var(--text-primary);
     min-height: 100vh;
     line-height: 1.5;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    position: relative;
   }
 
-  /* ===== ANIMATED BACKGROUND ===== */
-  .bg-mesh {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  /* ===== ANIMATED GRADIENT BACKGROUND ===== */
+  .bg-gradient {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-purple) 50%, var(--bg-deep) 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease-in-out infinite;
   }
-  .bg-mesh::before {
-    content: ''; position: absolute; width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 70%);
-    top: -200px; left: -100px; animation: float1 20s ease-in-out infinite;
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
-  .bg-mesh::after {
-    content: ''; position: absolute; width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
-    bottom: -150px; right: -100px; animation: float2 25s ease-in-out infinite;
+
+  /* ===== NEON ORBS ===== */
+  .bg-orb {
+    position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
+    filter: blur(80px); opacity: 0.35;
   }
-  @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,60px)} }
-  @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-50px,-30px)} }
+  .bg-orb.cyan {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,212,255,0.25) 0%, transparent 70%);
+    top: -100px; left: -100px;
+    animation: orbFloat1 18s ease-in-out infinite;
+  }
+  .bg-orb.purple {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(168,85,247,0.22) 0%, transparent 70%);
+    bottom: -150px; right: -100px;
+    animation: orbFloat2 22s ease-in-out infinite;
+  }
+  .bg-orb.cyan2 {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(0,212,255,0.15) 0%, transparent 70%);
+    top: 40%; right: 10%;
+    animation: orbFloat3 16s ease-in-out infinite;
+  }
+  @keyframes orbFloat1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,80px) scale(1.1)} }
+  @keyframes orbFloat2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-50px,-60px) scale(1.15)} }
+  @keyframes orbFloat3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,40px) scale(0.9)} }
+
+  /* ===== JESUIT SYMBOL WATERMARK ===== */
+  .jesuit-watermark {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.035;
+    animation: watermarkPulse 8s ease-in-out infinite;
+  }
+  .jesuit-watermark svg {
+    width: min(70vw, 600px); height: min(70vw, 600px);
+    max-width: 600px; max-height: 600px;
+  }
+  @keyframes watermarkPulse {
+    0%,100% { opacity: 0.025; transform: scale(1); }
+    50% { opacity: 0.05; transform: scale(1.02); }
+  }
 
   /* ===== HEADER ===== */
   .header {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(7,7,10,0.85);
-    backdrop-filter: blur(20px) saturate(1.5);
-    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    background: rgba(10, 15, 30, 0.82);
+    backdrop-filter: blur(24px) saturate(1.5);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
     border-bottom: 1px solid var(--border);
     padding: 0 clamp(16px, 4vw, 40px);
   }
@@ -84,10 +127,10 @@
     height: 64px;
   }
   .logo {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: clamp(22px, 5vw, 28px);
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-weight: 900;
+    letter-spacing: 0.04em;
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -99,7 +142,7 @@
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: blur(16px); opacity: 0.4;
+    filter: blur(14px); opacity: 0.45;
     pointer-events: none;
   }
   .header-badge {
@@ -134,11 +177,11 @@
     content: ''; width: 24px; height: 1px; background: var(--text-muted);
   }
   .hero h1 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: clamp(30px, 7vw, 44px);
-    font-weight: 700;
+    font-weight: 900;
     line-height: 1.15;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     color: var(--text-primary);
     margin-bottom: 8px;
   }
@@ -148,7 +191,8 @@
     background-clip: text;
   }
   .hero-sub {
-    font-size: 15px; color: var(--text-secondary); max-width: 480px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px; font-weight: 400; color: var(--text-secondary); max-width: 480px;
     line-height: 1.6;
   }
 
@@ -172,24 +216,26 @@
     text-align: center;
     transition: var(--transition);
     position: relative; overflow: hidden;
+    backdrop-filter: blur(8px);
   }
   .stat-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-cyan));
     opacity: 0; transition: var(--transition);
   }
   .stat-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
   .stat-card:hover::before { opacity: 1; }
   .stat-value {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: clamp(24px, 5vw, 32px);
-    font-weight: 700;
+    font-weight: 900;
     line-height: 1;
     background: linear-gradient(180deg, var(--text-primary), var(--text-secondary));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .stat-label {
+    font-family: 'Roboto', sans-serif;
     font-size: 11px; font-weight: 500; color: var(--text-muted);
     margin-top: 6px; letter-spacing: 0.04em;
   }
@@ -200,28 +246,31 @@
   .progress-header {
     display: flex; justify-content: space-between; align-items: center;
   }
-  .progress-header span { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+  .progress-header span { font-family: 'Roboto', sans-serif; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
   .progress-header strong {
-    font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700;
+    font-family: 'Roboto', sans-serif; font-size: 18px; font-weight: 900;
     color: var(--text-primary);
   }
   .progress-track {
-    height: 6px; background: var(--bg-elevated); border-radius: 999px;
+    height: 6px; background: rgba(255,255,255,0.06); border-radius: 999px;
     overflow: hidden; position: relative;
   }
   .progress-fill {
     height: 100%; border-radius: 999px;
-    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-cyan));
+    background-size: 200% 100%;
+    animation: progressShine 3s linear infinite;
     transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
   }
   .progress-fill::after {
-    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 20px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 30px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
     border-radius: 999px;
     animation: shimmer 2s ease-in-out infinite;
   }
   @keyframes shimmer { 0%,100%{opacity:0} 50%{opacity:1} }
+  @keyframes progressShine { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
 
   /* ===== FILTERS ===== */
   .filters {
@@ -231,28 +280,31 @@
   }
   .filter-select {
     appearance: none; -webkit-appearance: none;
-    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+    font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 500;
     padding: 10px 36px 10px 14px; border-radius: var(--radius-sm);
     border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary);
     cursor: pointer; transition: var(--transition);
     background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238B8AA3' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 12px center;
+    backdrop-filter: blur(8px);
   }
   .filter-select:focus {
-    outline: none; border-color: var(--gradient-mid);
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    outline: none; border-color: var(--neon-cyan);
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.12);
   }
   .filter-select:hover { border-color: var(--border-hover); }
   .btn-toggle {
-    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+    font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 700;
     padding: 10px 18px; border-radius: var(--radius-sm); cursor: pointer;
     border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary);
     transition: var(--transition); white-space: nowrap;
     display: inline-flex; align-items: center; gap: 6px;
+    backdrop-filter: blur(8px);
   }
   .btn-toggle:hover {
-    border-color: var(--gradient-mid); color: var(--text-primary);
-    background: rgba(59,130,246,0.08);
+    border-color: var(--neon-cyan); color: var(--text-primary);
+    background: rgba(0,212,255,0.08);
+    box-shadow: 0 0 20px rgba(0,212,255,0.08);
   }
   .btn-toggle:active { transform: scale(0.97); }
 
@@ -270,6 +322,7 @@
     overflow: hidden;
     transition: var(--transition);
     position: relative;
+    backdrop-filter: blur(12px);
   }
   .area-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
@@ -306,8 +359,8 @@
   .area-card:hover .area-dot { transform: scale(1.2); }
 
   .area-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 17px; font-weight: 600;
+    font-family: 'Roboto', sans-serif;
+    font-size: 17px; font-weight: 700;
     flex: 1; min-width: 0;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
@@ -332,7 +385,7 @@
   .area-card.open .area-chevron { transform: rotate(180deg); }
 
   .area-progress {
-    height: 4px; background: var(--bg-elevated);
+    height: 4px; background: rgba(255,255,255,0.05);
     margin: 0 20px 14px; border-radius: 999px; overflow: hidden;
     opacity: 0; transform: translateY(-4px);
     transition: all 0.3s ease;
@@ -362,7 +415,7 @@
   .task-item {
     display: flex; align-items: flex-start; gap: 12px;
     padding: 14px 16px;
-    background: var(--bg-elevated);
+    background: rgba(255,255,255,0.03);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     transition: var(--transition);
@@ -375,13 +428,14 @@
   }
   .task-item:hover {
     border-color: var(--border-hover);
-    background: var(--bg-card-hover);
+    background: rgba(255,255,255,0.06);
     transform: translateX(2px);
   }
   .task-item:hover::before { opacity: 0.5; }
 
   .task-content { flex: 1; min-width: 0; }
   .task-title {
+    font-family: 'Roboto', sans-serif;
     font-size: 14px; font-weight: 500; line-height: 1.5;
     color: var(--text-primary);
     word-break: break-word;
@@ -394,14 +448,14 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px; font-weight: 500; letter-spacing: 0.04em;
     padding: 3px 8px; border-radius: 6px;
-    background: var(--bg-card); color: var(--text-muted);
+    background: rgba(255,255,255,0.04); color: var(--text-muted);
     border: 1px solid var(--border);
   }
   .task-tag.resp { color: var(--accent-color); border-color: rgba(255,255,255,0.08); }
 
   .task-status {
-    font-family: 'Inter', sans-serif;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.03em;
     padding: 6px 14px; border-radius: 999px; cursor: pointer;
     border: 1px solid transparent; white-space: nowrap;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -456,7 +510,8 @@
   .footer {
     position: relative; z-index: 1;
     border-top: 1px solid var(--border);
-    background: var(--bg-elevated);
+    background: rgba(10, 15, 30, 0.7);
+    backdrop-filter: blur(16px);
     padding: 28px clamp(16px, 4vw, 40px);
     text-align: center;
   }
@@ -464,7 +519,7 @@
     max-width: 900px; margin: 0 auto;
   }
   .footer-email {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Roboto', sans-serif;
     font-size: 13px; font-weight: 500;
     color: var(--text-secondary);
     margin-bottom: 6px;
@@ -476,8 +531,8 @@
     box-shadow: 0 0 8px var(--accent-info);
   }
   .footer-name {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px; font-weight: 600;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px; font-weight: 700;
     color: var(--text-muted);
     letter-spacing: 0.02em;
   }
@@ -528,6 +583,7 @@
     .task-item { padding: 12px 12px; gap: 10px; }
     .task-title { font-size: 13.5px; }
     .task-status { font-size: 10.5px; padding: 5px 11px; }
+    .jesuit-watermark svg { width: 90vw; height: 90vw; }
   }
 
   /* Reduced motion */
@@ -542,7 +598,65 @@
 </head>
 <body>
 
-<div class="bg-mesh"></div>
+<!-- Animated gradient background -->
+<div class="bg-gradient"></div>
+
+<!-- Neon orbs -->
+<div class="bg-orb cyan"></div>
+<div class="bg-orb purple"></div>
+<div class="bg-orb cyan2"></div>
+
+<!-- Jesuit symbol watermark -->
+<div class="jesuit-watermark">
+  <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Sun rays -->
+    <g stroke="currentColor" stroke-width="1.2" opacity="0.6">
+      <line x1="200" y1="20" x2="200" y2="60"/>
+      <line x1="200" y1="340" x2="200" y2="380"/>
+      <line x1="20" y1="200" x2="60" y2="200"/>
+      <line x1="340" y1="200" x2="380" y2="200"/>
+      <line x1="73" y1="73" x2="101" y2="101"/>
+      <line x1="299" y1="299" x2="327" y2="327"/>
+      <line x1="73" y1="327" x2="101" y2="299"/>
+      <line x1="299" y1="101" x2="327" y2="73"/>
+      <line x1="127" y1="35" x2="145" y2="70"/>
+      <line x1="255" y1="330" x2="273" y2="365"/>
+      <line x1="35" y1="273" x2="70" y2="255"/>
+      <line x1="330" y1="145" x2="365" y2="127"/>
+      <line x1="35" y1="127" x2="70" y2="145"/>
+      <line x1="330" y1="255" x2="365" y2="273"/>
+      <line x1="127" y1="365" x2="145" y2="330"/>
+      <line x1="255" y1="70" x2="273" y2="35"/>
+    </g>
+    <!-- Outer circle -->
+    <circle cx="200" cy="200" r="145" stroke="currentColor" stroke-width="2" opacity="0.5"/>
+    <!-- Inner circle -->
+    <circle cx="200" cy="200" r="105" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+    <!-- IHS letters -->
+    <text x="200" y="225" text-anchor="middle" font-family="serif" font-size="72" font-weight="bold" fill="currentColor" opacity="0.7">IHS</text>
+    <!-- Cross above H -->
+    <g stroke="currentColor" stroke-width="2.5" opacity="0.7">
+      <line x1="200" y1="115" x2="200" y2="155"/>
+      <line x1="185" y1="130" x2="215" y2="130"/>
+    </g>
+    <!-- Three nails below -->
+    <g stroke="currentColor" stroke-width="2" opacity="0.6">
+      <line x1="170" y1="255" x2="170" y2="275"/>
+      <line x1="165" y1="260" x2="175" y2="260"/>
+      <line x1="200" y1="255" x2="200" y2="280"/>
+      <line x1="192" y1="262" x2="208" y2="262"/>
+      <line x1="230" y1="255" x2="230" y2="275"/>
+      <line x1="225" y1="260" x2="235" y2="260"/>
+    </g>
+    <!-- Decorative rays between circles -->
+    <g stroke="currentColor" stroke-width="1" opacity="0.3">
+      <line x1="200" y1="55" x2="200" y2="95"/>
+      <line x1="200" y1="305" x2="200" y2="345"/>
+      <line x1="55" y1="200" x2="95" y2="200"/>
+      <line x1="305" y1="200" x2="345" y2="200"/>
+    </g>
+  </svg>
+</div>
 
 <header class="header">
   <div class="header-inner">
