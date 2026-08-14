@@ -97,11 +97,26 @@
   .pt2-empty{font-size:14px;color:var(--text-soft);padding:16px;text-align:center}
 
   @media (max-width:480px){
-    .pt2{font-size:15px}
+    .pt2{font-size:17px; padding:18px 14px}
+    .pt2 h1{font-size:clamp(28px,9vw,34px)}
+    .pt2 .eyebrow{font-size:12.5px}
     .pt2-summary{gap:8px}
-    .pt2-stat{min-width:80px;padding:10px 12px}
-    .pt2-card summary{padding:16px}
-    .pt2-card summary h3{font-size:16px}
+    .pt2-stat{min-width:0;flex:1;padding:13px 10px;text-align:center}
+    .pt2-stat .n{font-size:26px}
+    .pt2-stat .l{font-size:11.5px}
+    .pt2-filters{gap:8px}
+    .pt2-filters select{flex:1;font-size:15px;padding:11px 10px}
+    .pt2-toggleall{flex:1;font-size:15px;padding:11px 10px;white-space:nowrap}
+    .pt2-card summary{padding:20px 16px;gap:14px}
+    .pt2-dot{width:12px;height:12px}
+    .pt2-card summary h3{font-size:18px}
+    .pt2-card summary .count{font-size:13.5px}
+    .pt2-chev{width:20px;height:20px}
+    .pt2-list{padding:0 14px 18px}
+    .pt2-item{padding:15px}
+    .pt2-item .t{font-size:16px;line-height:1.5}
+    .pt2-item .m{font-size:13px}
+    .pt2-status{font-size:13.5px;padding:8px 14px}
   }
 </style>
 <div class="pt2" id="pt2Root">
