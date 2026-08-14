@@ -1,288 +1,865 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CECOSAM — Centro de Exalumnos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
-  @property --angle{ syntax:'<angle>'; inherits:false; initial-value:0deg; }
+  :root {
+    --bg: #07070A;
+    --bg-elevated: #0E0E14;
+    --bg-card: #12121A;
+    --bg-card-hover: #181824;
+    --border: #1E1E2E;
+    --border-hover: #2A2A40;
+    --text-primary: #F0EFF5;
+    --text-secondary: #8B8AA3;
+    --text-muted: #5A5970;
+    --accent-legal: #6FA8DC;
+    --accent-info: #4FD1A5;
+    --accent-fin: #A9D18E;
+    --accent-mkt: #F2A7C0;
+    --accent-com: #F2995F;
+    --accent-rrhh: #B9A6E8;
+    --accent-infra: #F0C46B;
+    --accent-gob: #B9B6AA;
+    --gradient-start: #A855F7;
+    --gradient-mid: #3B82F6;
+    --gradient-end: #EAB308;
+    --shadow-glow: rgba(168, 85, 247, 0.08);
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-  .pt2{
-    --bg:#0A0A0B; --panel:#141417; --panel-2:#1B1B20; --text:#F2F1EC; --text-soft:#9A978C; --line:#26262C;
-    --cyan:#0FB8C9; --cyan-glow:rgba(15,184,201,.45);
-    --legal:#6FA8DC; --info:#4FD1A5; --fin:#A9D18E; --mkt:#F2A7C0; --com:#F2995F;
-    --rrhh:#B9A6E8; --infra:#F0C46B; --gob:#B9B6AA;
-    background:var(--bg); color:var(--text); font-family:'Inter',sans-serif;
-    font-size:16px;
-    padding:clamp(16px,4vw,32px); border-radius:14px;
-  }
-  .pt2 *{box-sizing:border-box}
-  .pt2 h1{
-    font-family:'Fraunces',serif;font-weight:600;font-size:clamp(26px,6vw,36px);margin:0 0 4px;
-    color:var(--cyan);
-  }
-  @media (prefers-reduced-motion: no-preference){
-    .pt2 h1{ animation:pt2cyanbreathe 3.6s ease-in-out infinite; }
-  }
-  @keyframes pt2cyanbreathe{
-    0%,100%{ text-shadow:0 0 0 transparent; opacity:1; }
-    50%{ text-shadow:0 0 18px var(--cyan-glow); opacity:.92; }
-  }
-  .pt2 .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-soft);margin:0 0 18px}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  .pt2-summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-  .pt2-stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 16px;min-width:96px}
-  .pt2-stat .n{font-family:'Fraunces',serif;font-size:23px;font-weight:600;line-height:1}
-  .pt2-stat .l{font-size:12px;color:var(--text-soft);margin-top:3px}
-  .pt2-track{height:7px;background:var(--panel-2);border-radius:4px;overflow:hidden;flex:1;min-width:120px;align-self:center}
-  .pt2-track i{display:block;height:100%;background:var(--info);transition:width .4s}
+  html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
 
-  .pt2-filters{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:20px}
-  .pt2-filters select{
-    font-family:'Inter';font-size:14px;padding:9px 12px;border-radius:9px;
-    border:1px solid var(--line);background:var(--panel);color:var(--text);
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  .pt2-toggleall{
-    font-family:'Inter';font-weight:500;font-size:14px;padding:9px 15px;border-radius:9px;
-    border:1px solid var(--cyan);background:transparent;color:var(--cyan);cursor:pointer;
-  }
-  .pt2-toggleall:hover{background:rgba(15,184,201,.1)}
 
-  .pt2-grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:720px}
+  /* ===== ANIMATED BACKGROUND ===== */
+  .bg-mesh {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  }
+  .bg-mesh::before {
+    content: ''; position: absolute; width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 70%);
+    top: -200px; left: -100px; animation: float1 20s ease-in-out infinite;
+  }
+  .bg-mesh::after {
+    content: ''; position: absolute; width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+    bottom: -150px; right: -100px; animation: float2 25s ease-in-out infinite;
+  }
+  @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,60px)} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-50px,-30px)} }
 
-  .pt2-card{position:relative;border-radius:14px;padding:1.5px;isolation:isolate}
-  .pt2-card::before{
-    content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;
-    background:conic-gradient(from var(--angle,0deg),
-      transparent 0deg, var(--accent) 40deg, transparent 90deg,
-      transparent 180deg, var(--accent) 220deg, transparent 270deg, transparent 360deg);
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor; mask-composite:exclude;
-    opacity:.85;
+  /* ===== HEADER ===== */
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(7,7,10,0.85);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border-bottom: 1px solid var(--border);
+    padding: 0 clamp(16px, 4vw, 40px);
   }
-  @media (prefers-reduced-motion: no-preference){
-    .pt2-card::before{ animation:pt2spin 7s linear infinite; }
+  .header-inner {
+    max-width: 900px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
   }
-  @keyframes pt2spin{ to{ --angle:360deg; } }
+  .logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(22px, 5vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+  }
+  .logo::after {
+    content: 'CECOSAM';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: blur(16px); opacity: 0.4;
+    pointer-events: none;
+  }
+  .header-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 6px 12px; border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+  }
 
-  .pt2-card > details{
-    position:relative;background:var(--panel);border-radius:12.5px;overflow:hidden;
+  /* ===== MAIN ===== */
+  .main {
+    position: relative; z-index: 1;
+    max-width: 900px; margin: 0 auto;
+    padding: clamp(24px, 5vw, 40px) clamp(16px, 4vw, 40px) clamp(40px, 8vw, 80px);
   }
-  .pt2-card summary{
-    list-style:none;cursor:pointer;padding:18px 18px;display:flex;align-items:center;gap:13px;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .pt2-card summary::-webkit-details-marker{display:none}
-  .pt2-dot{width:11px;height:11px;border-radius:50%;background:var(--accent);flex:none}
-  .pt2-card summary h3{margin:0;font-size:17px;font-weight:600;font-family:'Inter'}
-  .pt2-card summary .count{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-soft);white-space:nowrap}
-  .pt2-chev{transition:transform .25s ease;color:var(--text-soft);flex:none;width:18px;height:18px}
-  .pt2-card details[open] .pt2-chev{transform:rotate(90deg)}
 
-  .pt2-mini{height:5px;background:var(--panel-2);margin:0 18px 14px;border-radius:3px;overflow:hidden}
-  .pt2-mini i{display:block;height:100%;background:var(--accent)}
-
-  .pt2-list{padding:0 16px 16px}
-  .pt2-item{
-    background:var(--panel-2);border:1px solid var(--line);border-radius:11px;
-    padding:13px 14px;margin-bottom:9px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  /* ===== HERO SECTION ===== */
+  .hero {
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease-out both;
   }
-  .pt2-item .txt{flex:1;min-width:180px}
-  .pt2-item .t{font-size:15px;line-height:1.45}
-  .pt2-item .m{font-size:12.5px;color:var(--text-soft);margin-top:5px;font-family:'IBM Plex Mono',monospace}
-  .pt2-status{
-    font-size:12.5px;padding:7px 13px;border-radius:999px;border:1px solid var(--line);
-    background:var(--panel);color:var(--text-soft);cursor:pointer;white-space:nowrap;font-family:'Inter';flex:none;
-    margin-left:auto;
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 10px;
   }
-  .pt2-status[data-s="Completado"]{background:#1D2B18;border-color:#3B5A2E;color:#9AD97F}
-  .pt2-status[data-s="En curso"]{background:#132531;border-color:#2C5876;color:#7FC2E8}
-  .pt2-status[data-s="Bloqueado"]{background:#301A18;border-color:#6B342E;color:#E89184}
-  .pt2-empty{font-size:14px;color:var(--text-soft);padding:16px;text-align:center}
+  .hero-eyebrow::before {
+    content: ''; width: 24px; height: 1px; background: var(--text-muted);
+  }
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(30px, 7vw, 44px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, #A78BFA, #60A5FA);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: 15px; color: var(--text-secondary); max-width: 480px;
+    line-height: 1.6;
+  }
 
-  @media (max-width:480px){
-    .pt2{font-size:17px; padding:18px 14px}
-    .pt2 h1{font-size:clamp(28px,9vw,34px)}
-    .pt2 .eyebrow{font-size:12.5px}
-    .pt2-summary{gap:8px}
-    .pt2-stat{min-width:0;flex:1;padding:13px 10px;text-align:center}
-    .pt2-stat .n{font-size:26px}
-    .pt2-stat .l{font-size:11.5px}
-    .pt2-filters{gap:8px}
-    .pt2-filters select{flex:1;font-size:15px;padding:11px 10px}
-    .pt2-toggleall{flex:1;font-size:15px;padding:11px 10px;white-space:nowrap}
-    .pt2-card summary{padding:20px 16px;gap:14px}
-    .pt2-dot{width:12px;height:12px}
-    .pt2-card summary h3{font-size:18px}
-    .pt2-card summary .count{font-size:13.5px}
-    .pt2-chev{width:20px;height:20px}
-    .pt2-list{padding:0 14px 18px}
-    .pt2-item{padding:15px}
-    .pt2-item .t{font-size:16px;line-height:1.5}
-    .pt2-item .m{font-size:13px}
-    .pt2-status{font-size:13.5px;padding:8px 14px}
+  /* ===== STATS BAR ===== */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 1.5fr;
+    gap: 12px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s 0.1s ease-out both;
+  }
+  @media (max-width: 640px) {
+    .stats-bar { grid-template-columns: repeat(3, 1fr); }
+    .stats-bar .stat-progress { grid-column: 1 / -1; }
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 14px;
+    text-align: center;
+    transition: var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+    opacity: 0; transition: var(--transition);
+  }
+  .stat-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+  .stat-card:hover::before { opacity: 1; }
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(24px, 5vw, 32px);
+    font-weight: 700;
+    line-height: 1;
+    background: linear-gradient(180deg, var(--text-primary), var(--text-secondary));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-label {
+    font-size: 11px; font-weight: 500; color: var(--text-muted);
+    margin-top: 6px; letter-spacing: 0.04em;
+  }
+  .stat-progress {
+    display: flex; flex-direction: column; justify-content: center; gap: 8px;
+    padding: 14px 18px; text-align: left;
+  }
+  .progress-header {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .progress-header span { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+  .progress-header strong {
+    font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700;
+    color: var(--text-primary);
+  }
+  .progress-track {
+    height: 6px; background: var(--bg-elevated); border-radius: 999px;
+    overflow: hidden; position: relative;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  .progress-fill::after {
+    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 20px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+    border-radius: 999px;
+    animation: shimmer 2s ease-in-out infinite;
+  }
+  @keyframes shimmer { 0%,100%{opacity:0} 50%{opacity:1} }
+
+  /* ===== FILTERS ===== */
+  .filters {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.15s ease-out both;
+  }
+  .filter-select {
+    appearance: none; -webkit-appearance: none;
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+    padding: 10px 36px 10px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary);
+    cursor: pointer; transition: var(--transition);
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238B8AA3' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+  .filter-select:focus {
+    outline: none; border-color: var(--gradient-mid);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+  }
+  .filter-select:hover { border-color: var(--border-hover); }
+  .btn-toggle {
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 10px 18px; border-radius: var(--radius-sm); cursor: pointer;
+    border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary);
+    transition: var(--transition); white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-toggle:hover {
+    border-color: var(--gradient-mid); color: var(--text-primary);
+    background: rgba(59,130,246,0.08);
+  }
+  .btn-toggle:active { transform: scale(0.97); }
+
+  /* ===== GRID ===== */
+  .grid {
+    display: flex; flex-direction: column; gap: 14px;
+    animation: fadeUp 0.6s 0.2s ease-out both;
+  }
+
+  /* ===== AREA CARD ===== */
+  .area-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition);
+    position: relative;
+  }
+  .area-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent-color);
+    opacity: 0.6; transition: var(--transition);
+  }
+  .area-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 8px 32px var(--shadow-glow), 0 0 0 1px var(--border-hover);
+  }
+  .area-card:hover::before { opacity: 1; }
+
+  .area-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 20px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    position: relative;
+  }
+  .area-header::after {
+    content: ''; position: absolute; bottom: 0; left: 20px; right: 20px; height: 1px;
+    background: var(--border); opacity: 0;
+    transition: var(--transition);
+  }
+  .area-card.open .area-header::after { opacity: 1; }
+
+  .area-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent-color);
+    box-shadow: 0 0 12px var(--accent-color-glow);
+    flex-shrink: 0; transition: var(--transition);
+  }
+  .area-card:hover .area-dot { transform: scale(1.2); }
+
+  .area-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px; font-weight: 600;
+    flex: 1; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .area-meta {
+    display: flex; align-items: center; gap: 14px;
+    flex-shrink: 0;
+  }
+  .area-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-muted);
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--bg-elevated); border: 1px solid var(--border);
+  }
+  .area-count span { color: var(--text-secondary); }
+  .area-chevron {
+    width: 20px; height: 20px; color: var(--text-muted);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+  }
+  .area-card.open .area-chevron { transform: rotate(180deg); }
+
+  .area-progress {
+    height: 4px; background: var(--bg-elevated);
+    margin: 0 20px 14px; border-radius: 999px; overflow: hidden;
+    opacity: 0; transform: translateY(-4px);
+    transition: all 0.3s ease;
+  }
+  .area-card.open .area-progress { opacity: 1; transform: translateY(0); }
+  .area-progress-fill {
+    height: 100%; border-radius: 999px;
+    background: var(--accent-color);
+    box-shadow: 0 0 8px var(--accent-color-glow);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ===== TASK LIST ===== */
+  .task-list {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    opacity: 0;
+  }
+  .area-card.open .task-list {
+    max-height: 2000px; opacity: 1;
+  }
+  .task-list-inner {
+    padding: 0 16px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .task-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .task-item::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--accent-color); opacity: 0; transition: var(--transition);
+    border-radius: 0 2px 2px 0;
+  }
+  .task-item:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-card-hover);
+    transform: translateX(2px);
+  }
+  .task-item:hover::before { opacity: 0.5; }
+
+  .task-content { flex: 1; min-width: 0; }
+  .task-title {
+    font-size: 14px; font-weight: 500; line-height: 1.5;
+    color: var(--text-primary);
+    word-break: break-word;
+  }
+  .task-meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    margin-top: 6px;
+  }
+  .task-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.04em;
+    padding: 3px 8px; border-radius: 6px;
+    background: var(--bg-card); color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .task-tag.resp { color: var(--accent-color); border-color: rgba(255,255,255,0.08); }
+
+  .task-status {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+    padding: 6px 14px; border-radius: 999px; cursor: pointer;
+    border: 1px solid transparent; white-space: nowrap;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0; margin-top: 2px;
+    position: relative; overflow: hidden;
+  }
+  .task-status::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+  .task-status:hover::after { transform: translateX(100%); }
+  .task-status:active { transform: scale(0.95); }
+
+  .status-pendiente {
+    background: rgba(255,255,255,0.04); color: var(--text-muted);
+    border-color: var(--border);
+  }
+  .status-pendiente:hover { background: rgba(255,255,255,0.08); color: var(--text-secondary); }
+
+  .status-curso {
+    background: rgba(79,209,165,0.1); color: #6EE7B7;
+    border-color: rgba(79,209,165,0.2);
+    box-shadow: 0 0 12px rgba(79,209,165,0.08);
+  }
+  .status-curso:hover { background: rgba(79,209,165,0.15); box-shadow: 0 0 16px rgba(79,209,165,0.12); }
+
+  .status-completado {
+    background: rgba(169,209,142,0.12); color: #A3E635;
+    border-color: rgba(169,209,142,0.25);
+    box-shadow: 0 0 12px rgba(169,209,142,0.08);
+  }
+  .status-completado:hover { background: rgba(169,209,142,0.18); box-shadow: 0 0 16px rgba(169,209,142,0.12); }
+
+  .status-bloqueado {
+    background: rgba(232,145,132,0.1); color: #FCA5A5;
+    border-color: rgba(232,145,132,0.2);
+    box-shadow: 0 0 12px rgba(232,145,132,0.06);
+  }
+  .status-bloqueado:hover { background: rgba(232,145,132,0.15); box-shadow: 0 0 16px rgba(232,145,132,0.1); }
+
+  .empty-state {
+    text-align: center; padding: 32px 20px; color: var(--text-muted);
+    font-size: 13px;
+  }
+  .empty-state svg {
+    width: 40px; height: 40px; margin-bottom: 10px; opacity: 0.3;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    background: var(--bg-elevated);
+    padding: 28px clamp(16px, 4vw, 40px);
+    text-align: center;
+  }
+  .footer-inner {
+    max-width: 900px; margin: 0 auto;
+  }
+  .footer-email {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .footer-email::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-info);
+    box-shadow: 0 0 8px var(--accent-info);
+  }
+  .footer-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px; font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+  .footer-divider {
+    width: 32px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-hover), transparent);
+    margin: 14px auto;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse-dot {
+    0%,100% { box-shadow: 0 0 0 0 var(--accent-color-glow); }
+    50% { box-shadow: 0 0 0 6px transparent; }
+  }
+  .area-dot.pulse { animation: pulse-dot 2s ease-in-out infinite; }
+
+  /* Stagger children */
+  .grid .area-card {
+    opacity: 0; animation: fadeUp 0.5s ease-out forwards;
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 480px) {
+    .header-inner { height: 56px; }
+    .header-badge { display: none; }
+    .hero { margin-bottom: 24px; }
+    .hero h1 { font-size: 28px; }
+    .stats-bar { gap: 8px; }
+    .stat-card { padding: 14px 10px; }
+    .stat-value { font-size: 26px; }
+    .stat-label { font-size: 10px; }
+    .filters { gap: 8px; }
+    .filter-select, .btn-toggle { flex: 1; font-size: 13px; padding: 11px 12px; }
+    .area-header { padding: 16px 14px; gap: 10px; }
+    .area-title { font-size: 15px; }
+    .area-meta { gap: 8px; }
+    .area-count { font-size: 11px; padding: 3px 8px; }
+    .task-item { padding: 12px 12px; gap: 10px; }
+    .task-title { font-size: 13.5px; }
+    .task-status { font-size: 10.5px; padding: 5px 11px; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
-<div class="pt2" id="pt2Root">
-  <p class="eyebrow">Centro de exalumnos · Semanas 1–16</p>
-  <h1>Plan de tareas</h1>
-  <div class="pt2-summary" id="pt2Summary"></div>
-  <div class="pt2-filters" id="pt2Filters">
-    <select id="pt2StatusSel" aria-label="Filtrar por estado"></select>
-    <button class="pt2-toggleall" id="pt2ToggleAll" type="button">Colapsar todo</button>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">CECOSAM</div>
+    <div class="header-badge">Plan de tareas</div>
   </div>
-  <div class="pt2-grid" id="pt2Grid"></div>
-</div>
+</header>
+
+<main class="main">
+  <section class="hero">
+    <p class="hero-eyebrow">Centro de exalumnos · Semanas 1–16</p>
+    <h1>Plan de <span>tareas</span></h1>
+    <p class="hero-sub">Seguimiento integral del proyecto de constitución del Centro de Exalumnos San Mateo. Gestiona el avance por área y estado.</p>
+  </section>
+
+  <div class="stats-bar" id="statsBar"></div>
+
+  <div class="filters" id="filters">
+    <select class="filter-select" id="statusFilter" aria-label="Filtrar por estado"></select>
+    <button class="btn-toggle" id="toggleAll" type="button">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      Colapsar todo
+    </button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-email">exalumnos@sanmateo.cl</div>
+    <div class="footer-divider"></div>
+    <div class="footer-name">Centro de Exalumnos</div>
+  </div>
+</footer>
+
 <script>
-(function(){
+(function() {
+  'use strict';
+
+  // ===== DATA =====
   const TASKS = [
-   {area:"Legal",tarea:"Definir tipo de entidad y estructura legal (fundación, corporación, asociación)",resp:"Abogado",s:1,d:1,estado:"Pendiente"},
-   {area:"Legal",tarea:"Redactar estatutos y escritura pública",resp:"Abogado",s:2,d:2,estado:"Pendiente"},
-   {area:"Legal",tarea:"Inscribir la entidad y obtener RUT / personalidad jurídica",resp:"Abogado / Contador",s:4,d:1,estado:"Pendiente"},
-   {area:"Legal",tarea:"Tramitar permisos municipales",resp:"Encargado legal",s:5,d:1,estado:"Pendiente"},
-   {area:"Legal",tarea:"Regularizar situación tributaria (inicio de actividades, régimen)",resp:"Contador",s:5,d:1,estado:"Pendiente"},
+    {area:"Legal",tarea:"Definir tipo de entidad y estructura legal (fundación, corporación, asociación)",resp:"Abogado",s:1,d:1,estado:"Pendiente"},
+    {area:"Legal",tarea:"Redactar estatutos y escritura pública",resp:"Abogado",s:2,d:2,estado:"Pendiente"},
+    {area:"Legal",tarea:"Inscribir la entidad y obtener RUT / personalidad jurídica",resp:"Abogado / Contador",s:4,d:1,estado:"Pendiente"},
+    {area:"Legal",tarea:"Tramitar permisos municipales",resp:"Encargado legal",s:5,d:1,estado:"Pendiente"},
+    {area:"Legal",tarea:"Regularizar situación tributaria (inicio de actividades, régimen)",resp:"Contador",s:5,d:1,estado:"Pendiente"},
 
-   {area:"Informática",tarea:"Contratar dominio y hosting",resp:"TI",s:3,d:1,estado:"Pendiente"},
-   {area:"Informática",tarea:"Configurar correo institucional",resp:"TI",s:3,d:1,estado:"Pendiente"},
-   {area:"Informática",tarea:"Diseñar y publicar sitio web",resp:"TI / Diseñador",s:4,d:3,estado:"Pendiente"},
-   {area:"Informática",tarea:"Construir base de datos de exalumnos",resp:"TI",s:4,d:2,estado:"Pendiente"},
-   {area:"Informática",tarea:"Desarrollar app / formulario de censo",resp:"TI",s:6,d:2,estado:"Pendiente"},
+    {area:"Informática",tarea:"Contratar dominio y hosting",resp:"TI",s:3,d:1,estado:"Pendiente"},
+    {area:"Informática",tarea:"Configurar correo institucional",resp:"TI",s:3,d:1,estado:"Pendiente"},
+    {area:"Informática",tarea:"Diseñar y publicar sitio web",resp:"TI / Diseñador",s:4,d:3,estado:"Pendiente"},
+    {area:"Informática",tarea:"Construir base de datos de exalumnos",resp:"TI",s:4,d:2,estado:"Pendiente"},
+    {area:"Informática",tarea:"Desarrollar app / formulario de censo",resp:"TI",s:6,d:2,estado:"Pendiente"},
 
-   {area:"Finanzas",tarea:"Abrir cuenta bancaria institucional",resp:"Tesorero",s:4,d:1,estado:"Pendiente"},
-   {area:"Finanzas",tarea:"Elaborar presupuesto de gastos e ingresos",resp:"Contador",s:5,d:2,estado:"Pendiente"},
-   {area:"Finanzas",tarea:"Proyectar flujo de caja (12-24 meses)",resp:"Contador",s:6,d:2,estado:"Pendiente"},
-   {area:"Finanzas",tarea:"Definir política de cuotas y donaciones",resp:"Directorio",s:7,d:1,estado:"Pendiente"},
-   {area:"Finanzas",tarea:"Implementar sistema contable",resp:"Contador",s:7,d:2,estado:"Pendiente"},
+    {area:"Finanzas",tarea:"Abrir cuenta bancaria institucional",resp:"Tesorero",s:4,d:1,estado:"Pendiente"},
+    {area:"Finanzas",tarea:"Elaborar presupuesto de gastos e ingresos",resp:"Contador",s:5,d:2,estado:"Pendiente"},
+    {area:"Finanzas",tarea:"Proyectar flujo de caja (12-24 meses)",resp:"Contador",s:6,d:2,estado:"Pendiente"},
+    {area:"Finanzas",tarea:"Definir política de cuotas y donaciones",resp:"Directorio",s:7,d:1,estado:"Pendiente"},
+    {area:"Finanzas",tarea:"Implementar sistema contable",resp:"Contador",s:7,d:2,estado:"Pendiente"},
 
-   {area:"Recursos humanos",tarea:"Mapear especialistas requeridos por área",resp:"Directorio",s:1,d:1,estado:"Pendiente"},
-   {area:"Recursos humanos",tarea:"Definir perfiles y dedicación (full-time / part-time / voluntario)",resp:"RRHH",s:2,d:1,estado:"Pendiente"},
-   {area:"Recursos humanos",tarea:"Contratar coordinador general",resp:"RRHH",s:3,d:2,estado:"Pendiente"},
-   {area:"Recursos humanos",tarea:"Contratar contador y asesor legal",resp:"RRHH",s:3,d:2,estado:"Pendiente"},
-   {area:"Recursos humanos",tarea:"Contratar community manager",resp:"RRHH",s:6,d:2,estado:"Pendiente"},
+    {area:"Recursos humanos",tarea:"Mapear especialistas requeridos por área",resp:"Directorio",s:1,d:1,estado:"Pendiente"},
+    {area:"Recursos humanos",tarea:"Definir perfiles y dedicación (full-time / part-time / voluntario)",resp:"RRHH",s:2,d:1,estado:"Pendiente"},
+    {area:"Recursos humanos",tarea:"Contratar coordinador general",resp:"RRHH",s:3,d:2,estado:"Pendiente"},
+    {area:"Recursos humanos",tarea:"Contratar contador y asesor legal",resp:"RRHH",s:3,d:2,estado:"Pendiente"},
+    {area:"Recursos humanos",tarea:"Contratar community manager",resp:"RRHH",s:6,d:2,estado:"Pendiente"},
 
-   {area:"Marketing",tarea:"Definir identidad de marca",resp:"Marketing",s:6,d:2,estado:"Pendiente"},
-   {area:"Marketing",tarea:"Seleccionar redes sociales prioritarias",resp:"Marketing",s:7,d:1,estado:"Pendiente"},
-   {area:"Marketing",tarea:"Crear plan de contenidos",resp:"Marketing",s:8,d:1,estado:"Pendiente"},
-   {area:"Marketing",tarea:"Configurar canales de comunicación (newsletter, WhatsApp)",resp:"Marketing",s:8,d:2,estado:"Pendiente"},
-   {area:"Marketing",tarea:"Lanzar campaña de difusión inicial",resp:"Marketing",s:9,d:2,estado:"Pendiente"},
+    {area:"Marketing",tarea:"Definir identidad de marca",resp:"Marketing",s:6,d:2,estado:"Pendiente"},
+    {area:"Marketing",tarea:"Seleccionar redes sociales prioritarias",resp:"Marketing",s:7,d:1,estado:"Pendiente"},
+    {area:"Marketing",tarea:"Crear plan de contenidos",resp:"Marketing",s:8,d:1,estado:"Pendiente"},
+    {area:"Marketing",tarea:"Configurar canales de comunicación (newsletter, WhatsApp)",resp:"Marketing",s:8,d:2,estado:"Pendiente"},
+    {area:"Marketing",tarea:"Lanzar campaña de difusión inicial",resp:"Marketing",s:9,d:2,estado:"Pendiente"},
 
-   {area:"Comercialización",tarea:"Definir catálogo de productos (charlas, talleres)",resp:"Coordinador",s:9,d:2,estado:"Pendiente"},
-   {area:"Comercialización",tarea:"Establecer alianzas para bolsa de empleo",resp:"Coordinador",s:10,d:2,estado:"Pendiente"},
-   {area:"Comercialización",tarea:"Diseñar programa de mentorías",resp:"Coordinador",s:11,d:2,estado:"Pendiente"},
-   {area:"Comercialización",tarea:"Definir membresías premium",resp:"Directorio",s:11,d:1,estado:"Pendiente"},
-   {area:"Comercialización",tarea:"Planificar primer evento de networking",resp:"Coordinador",s:12,d:2,estado:"Pendiente"},
+    {area:"Comercialización",tarea:"Definir catálogo de productos (charlas, talleres)",resp:"Coordinador",s:9,d:2,estado:"Pendiente"},
+    {area:"Comercialización",tarea:"Establecer alianzas para bolsa de empleo",resp:"Coordinador",s:10,d:2,estado:"Pendiente"},
+    {area:"Comercialización",tarea:"Diseñar programa de mentorías",resp:"Coordinador",s:11,d:2,estado:"Pendiente"},
+    {area:"Comercialización",tarea:"Definir membresías premium",resp:"Directorio",s:11,d:1,estado:"Pendiente"},
+    {area:"Comercialización",tarea:"Planificar primer evento de networking",resp:"Coordinador",s:12,d:2,estado:"Pendiente"},
 
-   {area:"Infraestructura",tarea:"Definir necesidad de oficina / espacio físico",resp:"Directorio",s:1,d:1,estado:"Pendiente"},
-   {area:"Infraestructura",tarea:"Buscar y contratar el espacio",resp:"Administración",s:2,d:2,estado:"Pendiente"},
-   {area:"Infraestructura",tarea:"Adquirir equipamiento (PC, mobiliario)",resp:"Administración",s:4,d:1,estado:"Pendiente"},
-   {area:"Infraestructura",tarea:"Instalar servicios básicos e internet",resp:"Administración",s:4,d:1,estado:"Pendiente"},
-   {area:"Infraestructura",tarea:"Habilitar señalética e imagen del espacio",resp:"Administración",s:5,d:1,estado:"Pendiente"},
+    {area:"Infraestructura",tarea:"Definir necesidad de oficina / espacio físico",resp:"Directorio",s:1,d:1,estado:"Pendiente"},
+    {area:"Infraestructura",tarea:"Buscar y contratar el espacio",resp:"Administración",s:2,d:2,estado:"Pendiente"},
+    {area:"Infraestructura",tarea:"Adquirir equipamiento (PC, mobiliario)",resp:"Administración",s:4,d:1,estado:"Pendiente"},
+    {area:"Infraestructura",tarea:"Instalar servicios básicos e internet",resp:"Administración",s:4,d:1,estado:"Pendiente"},
+    {area:"Infraestructura",tarea:"Habilitar señalética e imagen del espacio",resp:"Administración",s:5,d:1,estado:"Pendiente"},
 
-   {area:"Gobernanza / Otros",tarea:"Constituir comité / mesa directiva",resp:"Directorio",s:1,d:1,estado:"Pendiente"},
-   {area:"Gobernanza / Otros",tarea:"Establecer alianza con la universidad de origen",resp:"Directorio",s:2,d:3,estado:"Pendiente"},
-   {area:"Gobernanza / Otros",tarea:"Definir plan de sostenibilidad a largo plazo",resp:"Directorio",s:12,d:3,estado:"Pendiente"},
-   {area:"Gobernanza / Otros",tarea:"Revisión y ajuste general del proyecto",resp:"Directorio",s:15,d:2,estado:"Pendiente"},
-   {area:"Gobernanza / Otros",tarea:"Lanzamiento oficial del centro de exalumnos",resp:"Directorio",s:16,d:1,estado:"Pendiente"},
-  ].map((t,i)=>Object.assign({id:i},t));
+    {area:"Gobernanza / Otros",tarea:"Constituir comité / mesa directiva",resp:"Directorio",s:1,d:1,estado:"Pendiente"},
+    {area:"Gobernanza / Otros",tarea:"Establecer alianza con la universidad de origen",resp:"Directorio",s:2,d:3,estado:"Pendiente"},
+    {area:"Gobernanza / Otros",tarea:"Definir plan de sostenibilidad a largo plazo",resp:"Directorio",s:12,d:3,estado:"Pendiente"},
+    {area:"Gobernanza / Otros",tarea:"Revisión y ajuste general del proyecto",resp:"Directorio",s:15,d:2,estado:"Pendiente"},
+    {area:"Gobernanza / Otros",tarea:"Lanzamiento oficial del centro de exalumnos",resp:"Directorio",s:16,d:1,estado:"Pendiente"},
+  ].map((t, i) => Object.assign({id: i}, t));
 
-  const VARMAP = {
-    "Legal":"--legal","Informática":"--info","Finanzas":"--fin","Marketing":"--mkt",
-    "Comercialización":"--com","Recursos humanos":"--rrhh","Infraestructura":"--infra","Gobernanza / Otros":"--gob"
+  const AREA_CONFIG = {
+    "Legal":            { color: "#6FA8DC", glow: "rgba(111,168,220,0.35)" },
+    "Informática":      { color: "#4FD1A5", glow: "rgba(79,209,165,0.35)" },
+    "Finanzas":         { color: "#A9D18E", glow: "rgba(169,209,142,0.35)" },
+    "Marketing":        { color: "#F2A7C0", glow: "rgba(242,167,192,0.35)" },
+    "Comercialización": { color: "#F2995F", glow: "rgba(242,153,95,0.35)" },
+    "Recursos humanos": { color: "#B9A6E8", glow: "rgba(185,166,232,0.35)" },
+    "Infraestructura":  { color: "#F0C46B", glow: "rgba(240,196,107,0.35)" },
+    "Gobernanza / Otros": { color: "#B9B6AA", glow: "rgba(185,182,170,0.35)" }
   };
-  const AREAS = [...new Set(TASKS.map(t=>t.area))];
-  const STATUSES = ["Pendiente","En curso","Completado","Bloqueado"];
-  const CYCLE = {"Pendiente":"En curso","En curso":"Completado","Completado":"Bloqueado","Bloqueado":"Pendiente"};
 
-  const state = { status: "Todos", open: new Set(AREAS) };
+  const AREAS = [...new Set(TASKS.map(t => t.area))];
+  const STATUSES = ["Pendiente", "En curso", "Completado", "Bloqueado"];
+  const STATUS_CYCLE = {"Pendiente":"En curso","En curso":"Completado","Completado":"Bloqueado","Bloqueado":"Pendiente"};
+  const STATUS_CLASS = {"Pendiente":"status-pendiente","En curso":"status-curso","Completado":"status-completado","Bloqueado":"status-bloqueado"};
 
-  const summaryEl = document.getElementById('pt2Summary');
-  const filtersEl = document.getElementById('pt2Filters');
-  const gridEl = document.getElementById('pt2Grid');
+  // ===== STATE =====
+  const state = {
+    filter: "Todos",
+    openAreas: new Set(AREAS),
+    initialized: false
+  };
 
-  function renderSummary(){
+  // ===== DOM REFS =====
+  const $ = id => document.getElementById(id);
+  const statsBar = $('statsBar');
+  const statusFilter = $('statusFilter');
+  const toggleAllBtn = $('toggleAll');
+  const grid = $('grid');
+
+  // ===== RENDER STATS =====
+  function renderStats() {
     const total = TASKS.length;
-    const done = TASKS.filter(t=>t.estado==="Completado").length;
-    const pct = Math.round(done/total*100);
-    summaryEl.innerHTML = `
-      <div class="pt2-stat"><div class="n">${total}</div><div class="l">tareas</div></div>
-      <div class="pt2-stat"><div class="n">${done}</div><div class="l">completadas</div></div>
-      <div class="pt2-stat"><div class="n">${pct}%</div><div class="l">avance</div></div>
-      <div class="pt2-track"><i style="width:${pct}%"></i></div>
+    const done = TASKS.filter(t => t.estado === "Completado").length;
+    const inProgress = TASKS.filter(t => t.estado === "En curso").length;
+    const blocked = TASKS.filter(t => t.estado === "Bloqueado").length;
+    const pct = Math.round(done / total * 100);
+
+    statsBar.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-value">${total}</div>
+        <div class="stat-label">Tareas totales</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="background:linear-gradient(180deg,#A3E635,#4FD1A5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${done}</div>
+        <div class="stat-label">Completadas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="background:linear-gradient(180deg,#FCA5A5,#F2995F);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${blocked}</div>
+        <div class="stat-label">Bloqueadas</div>
+      </div>
+      <div class="stat-card stat-progress">
+        <div class="progress-header">
+          <span>Avance general</span>
+          <strong>${pct}%</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${pct}%"></div>
+        </div>
+      </div>
     `;
   }
 
-  function renderFilters(){
-    const sel = document.getElementById('pt2StatusSel');
-    sel.innerHTML = `
-      <option ${state.status==="Todos"?"selected":""}>Todos</option>
-      ${STATUSES.map(s=>`<option ${state.status===s?"selected":""}>${s}</option>`).join("")}
+  // ===== RENDER FILTERS =====
+  function renderFilters() {
+    statusFilter.innerHTML = `
+      <option value="Todos" ${state.filter === "Todos" ? "selected" : ""}>Todos los estados</option>
+      ${STATUSES.map(s => `<option value="${s}" ${state.filter === s ? "selected" : ""}>${s}</option>`).join("")}
     `;
-    sel.addEventListener('change', e=>{
-      state.status = e.target.value; renderGrid();
-    });
-    document.getElementById('pt2ToggleAll').addEventListener('click', ()=>{
-      const shouldOpen = state.open.size < AREAS.length;
-      state.open = shouldOpen ? new Set(AREAS) : new Set();
-      renderGrid();
-    });
   }
 
-  function updateToggleAllLabel(){
-    const btn = document.getElementById('pt2ToggleAll');
-    btn.textContent = state.open.size === AREAS.length ? "Colapsar todo" : "Desplegar todo";
+  // ===== TOGGLE ALL =====
+  function updateToggleLabel() {
+    const allOpen = state.openAreas.size === AREAS.length;
+    toggleAllBtn.innerHTML = allOpen
+      ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg> Colapsar todo`
+      : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Desplegar todo`;
   }
 
-  function cycleStatus(id){
-    const t = TASKS.find(x=>x.id===id);
-    t.estado = CYCLE[t.estado];
-    renderSummary(); renderGrid();
+  function toggleAll() {
+    const allOpen = state.openAreas.size === AREAS.length;
+    if (allOpen) {
+      state.openAreas.clear();
+    } else {
+      AREAS.forEach(a => state.openAreas.add(a));
+    }
+    renderGrid();
   }
 
-  function renderGrid(){
-    const cards = AREAS.map(area=>{
-      const items = TASKS.filter(t=>t.area===area && (state.status==="Todos" || t.estado===state.status));
-      const allInArea = TASKS.filter(t=>t.area===area);
-      const done = allInArea.filter(t=>t.estado==="Completado").length;
-      const pct = Math.round(done/allInArea.length*100);
-      const openAttr = state.open.has(area) ? "open" : "";
-      const varName = VARMAP[area];
-      const body = items.length
-        ? items.map(t=>`
-            <div class="pt2-item">
-              <div class="txt">
-                <div class="t">${t.tarea}</div>
-                <div class="m">S${t.s}–S${t.s+t.d-1} · ${t.resp}</div>
+  // ===== CYCLE STATUS =====
+  function cycleStatus(id, btn) {
+    const task = TASKS.find(t => t.id === id);
+    if (!task) return;
+
+    // Animate button
+    btn.style.transform = 'scale(0.9)';
+    setTimeout(() => btn.style.transform = '', 150);
+
+    task.estado = STATUS_CYCLE[task.estado];
+    renderStats();
+    renderGrid();
+  }
+
+  // ===== RENDER GRID =====
+  function renderGrid() {
+    const fragment = document.createDocumentFragment();
+
+    AREAS.forEach((area, areaIndex) => {
+      const allTasks = TASKS.filter(t => t.area === area);
+      const visibleTasks = allTasks.filter(t => state.filter === "Todos" || t.estado === state.filter);
+      const doneCount = allTasks.filter(t => t.estado === "Completado").length;
+      const pct = Math.round(doneCount / allTasks.length * 100);
+      const config = AREA_CONFIG[area];
+      const isOpen = state.openAreas.has(area);
+
+      const card = document.createElement('div');
+      card.className = `area-card ${isOpen ? 'open' : ''}`;
+      card.style.cssText = `--accent-color:${config.color};--accent-color-glow:${config.glow}`;
+      card.style.animationDelay = `${areaIndex * 0.05}s`;
+
+      const header = document.createElement('div');
+      header.className = 'area-header';
+      header.innerHTML = `
+        <span class="area-dot ${doneCount < allTasks.length ? 'pulse' : ''}"></span>
+        <h3 class="area-title">${area}</h3>
+        <div class="area-meta">
+          <span class="area-count"><span>${doneCount}</span> / ${allTasks.length}</span>
+          <svg class="area-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      `;
+
+      const progress = document.createElement('div');
+      progress.className = 'area-progress';
+      progress.innerHTML = `<div class="area-progress-fill" style="width:${pct}%"></div>`;
+
+      const list = document.createElement('div');
+      list.className = 'task-list';
+
+      const listInner = document.createElement('div');
+      listInner.className = 'task-list-inner';
+
+      if (visibleTasks.length === 0) {
+        listInner.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/><path d="M12 11v4M12 17h.01"/></svg>
+            <div>Sin tareas con este filtro.</div>
+          </div>
+        `;
+      } else {
+        visibleTasks.forEach((task, i) => {
+          const item = document.createElement('div');
+          item.className = 'task-item';
+          item.style.animationDelay = `${i * 0.03}s`;
+          item.innerHTML = `
+            <div class="task-content">
+              <div class="task-title">${escapeHtml(task.tarea)}</div>
+              <div class="task-meta">
+                <span class="task-tag">S${task.s}–S${task.s + task.d - 1}</span>
+                <span class="task-tag resp">${escapeHtml(task.resp)}</span>
               </div>
-              <button class="pt2-status" data-s="${t.estado}" data-id="${t.id}">${t.estado}</button>
-            </div>`).join("")
-        : `<div class="pt2-empty">Sin tareas con este filtro.</div>`;
-      return `
-        <div class="pt2-card" style="--accent:var(${varName})">
-          <details ${openAttr} data-area="${area}">
-            <summary>
-              <span class="pt2-dot"></span>
-              <h3>${area}</h3>
-              <span class="count">${done}/${allInArea.length}</span>
-              <svg class="pt2-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </summary>
-            <div class="pt2-mini"><i style="width:${pct}%"></i></div>
-            <div class="pt2-list">${body}</div>
-          </details>
-        </div>`;
-    }).join("");
-    gridEl.innerHTML = cards;
+            </div>
+            <button class="task-status ${STATUS_CLASS[task.estado]}" data-id="${task.id}" type="button">${task.estado}</button>
+          `;
+          const btn = item.querySelector('.task-status');
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            cycleStatus(task.id, btn);
+          });
+          listInner.appendChild(item);
+        });
+      }
 
-    gridEl.querySelectorAll('details').forEach(d=>{
-      d.addEventListener('toggle', ()=>{
-        const a = d.dataset.area;
-        if(d.open) state.open.add(a); else state.open.delete(a);
-        updateToggleAllLabel();
+      list.appendChild(listInner);
+      card.appendChild(header);
+      card.appendChild(progress);
+      card.appendChild(list);
+
+      // Toggle open/close
+      header.addEventListener('click', () => {
+        if (state.openAreas.has(area)) {
+          state.openAreas.delete(area);
+          card.classList.remove('open');
+        } else {
+          state.openAreas.add(area);
+          card.classList.add('open');
+        }
+        updateToggleLabel();
       });
+
+      fragment.appendChild(card);
     });
-    gridEl.querySelectorAll('.pt2-status').forEach(b=>{
-      b.addEventListener('click', (e)=>{ e.preventDefault(); cycleStatus(Number(b.dataset.id)); });
-    });
-    updateToggleAllLabel();
+
+    grid.innerHTML = '';
+    grid.appendChild(fragment);
+    updateToggleLabel();
   }
 
-  renderSummary(); renderFilters(); renderGrid();
+  // ===== UTILS =====
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ===== EVENTS =====
+  statusFilter.addEventListener('change', (e) => {
+    state.filter = e.target.value;
+    renderGrid();
+  });
+
+  toggleAllBtn.addEventListener('click', toggleAll);
+
+  // ===== INIT =====
+  renderStats();
+  renderFilters();
+  renderGrid();
+
+  // Reveal animation on load
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.grid .area-card').forEach((card, i) => {
+      card.style.animationDelay = `${i * 0.05}s`;
+    });
+  });
+
 })();
 </script>
+
+</body>
+</html>
